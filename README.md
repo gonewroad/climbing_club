@@ -1,9 +1,9 @@
-# GOanything
+# climbing_club
 
 클라이밍 연합동아리 웹사이트. 빌드 과정이 없는 정적 사이트로, GitHub Pages에
 그대로 올려서 운영합니다.
 
-사이트 주소: https://gonewroad.github.io/GOanything/
+사이트 주소: https://gonewroad.github.io/climbing_club/
 
 ## 구조
 
@@ -42,7 +42,7 @@
 개발 환경을 따로 갖추지 않아도 **GitHub 웹에서 바로** 고칠 수 있습니다.
 
 1. 고칠 파일을 저장소에서 연 뒤 연필 아이콘(✏️)을 누릅니다.
-   `data/club.json` 바로 가기: `github.com/gonewroad/GOanything/edit/main/data/club.json`
+   `data/club.json` 바로 가기: `github.com/gonewroad/climbing_club/edit/main/data/club.json`
 2. 수정하고 오른쪽 위 **Commit changes...**
 3. **Commit directly to the `main` branch** 가 선택된 채로 **Commit changes**
 
@@ -197,8 +197,8 @@ JSON에서 자주 실수하는 것:
 비어 보입니다.** 간단한 웹 서버로 띄워주세요.
 
 ```bash
-git clone https://github.com/gonewroad/GOanything
-cd GOanything
+git clone https://github.com/gonewroad/climbing_club
+cd climbing_club
 python3 -m http.server 8000
 # http://localhost:8000
 ```
