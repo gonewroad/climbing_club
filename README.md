@@ -242,7 +242,6 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 
 - [ ] 홈 암장 이름 · 주소 · 찾아오는 길 (`data/club.json` → `homeGym`)
 - [ ] 회비에 실제로 포함되는 항목 (`fee.includes`)
-- [ ] 인스타그램 계정 — 아직 `climbon_official` 로 되어 있습니다
 - [ ] 카카오 오픈채팅 링크 (`contact.openChatUrl`)
 - [ ] 모집 기간 · 정원 (`recruit.nextPeriod`, `recruit.capacity`)
 - [ ] 가입 신청 폼 주소 (`recruit.formUrl`) — Google Forms 또는 Formspree
