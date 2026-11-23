@@ -65,6 +65,10 @@ body.is-locked {
   overflow: hidden;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 img,
 svg {
   display: block;
