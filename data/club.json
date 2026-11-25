@@ -36,6 +36,15 @@
     "period": "매 학기 개강 첫 2주",
     "nextPeriod": "3월 2일 – 3월 15일",
     "formUrl": "https://forms.gle/sNTZd5TupN4pH3qG9",
+    "formEmbedUrl": "",
+    "formFields": [
+      "이름",
+      "학과",
+      "학번",
+      "연락처",
+      "운동 경험"
+    ],
+    "formMinutes": "2",
     "capacity": "15"
   }
 }

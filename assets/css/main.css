@@ -855,6 +855,7 @@
   border-radius: var(--radius);
   background: var(--surface);
   text-align: center;
+  word-break: keep-all; /* 한국어를 낱말 중간에서 끊지 않음 */
 }
 
 .form-slot__title {
@@ -864,16 +865,154 @@
 
 .form-slot__desc {
   max-width: 34em;
+  margin: 8px auto 0;
   color: var(--text-dim);
   font-size: 14px;
 }
 
-.form-slot code {
-  padding: 2px 6px;
-  border-radius: 5px;
+/* 신청서 주소가 있을 때: 안내 · QR · 버튼 · 바로 작성 */
+
+.form-slot.is-open {
+  grid-template-columns: minmax(0, 1fr) auto;
+  place-items: stretch;
+  align-items: center;
+  gap: 22px 32px;
+  min-height: 0;
+  padding: 28px;
+  border-style: solid;
+  border-color: var(--line);
   background: var(--surface-2);
-  color: var(--lime);
+  text-align: left;
+}
+
+.form-slot.is-open .form-slot__desc {
+  margin-inline: 0;
+}
+
+.form-fields {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.form-fields__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  color: var(--text-faint);
   font-size: 13px;
+  font-weight: 600;
+}
+
+.form-fields__time {
+  color: var(--accent);
+}
+
+.form-fields__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.form-fields__list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+}
+
+.form-fields__list li::before {
+  content: "✓";
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-qr {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.form-qr__code {
+  width: 148px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #fff;
+}
+
+.form-qr__code svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.form-qr figcaption {
+  max-width: 148px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.form-qr__save {
+  color: var(--text-dim);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.form-qr__save:hover {
+  color: var(--text);
+}
+
+.form-slot__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-slot__status {
+  color: var(--lime);
+  font-size: 13.5px;
+}
+
+/* 구글 폼은 밝은 화면이라 흰 판 위에 띄웁니다. 불러오는 동안 안내 문구가 보입니다. */
+.form-embed {
+  grid-column: 1 / -1;
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #fff;
+}
+
+.form-embed::before {
+  content: "신청서를 불러오는 중…";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #5f6368;
+  font-size: 14px;
+}
+
+.form-embed iframe {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: min(80vh, 960px);
+  border: 0;
 }
 
 /* ---------- 인스타그램 ---------- */
@@ -1003,6 +1142,19 @@
 }
 
 @media (max-width: 760px) {
+  .form-slot.is-open {
+    grid-template-columns: 1fr;
+    padding: 22px 18px;
+  }
+
+  .form-qr {
+    display: none;
+  }
+
+  .form-slot__actions .btn {
+    flex: 1 1 auto;
+  }
+
   :root {
     --header-h: 60px;
   }

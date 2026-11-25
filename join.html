@@ -75,8 +75,8 @@
                   <div>
                     <p class="step__title">신청서 작성</p>
                     <p class="step__desc">
-                      이름, 학과, 학번, 연락처와 간단한 운동 경험만 적으면 됩니다. 2분
-                      정도 걸립니다.
+                      <span data-form-fields-inline>이름, 학과, 학번, 연락처, 운동 경험</span>만
+                      적으면 됩니다. <span data-form-minutes-inline>2</span>분 정도 걸립니다.
                     </p>
                   </div>
                 </div>
@@ -121,26 +121,69 @@
               </h2>
 
               <!--
-                아래 문구는 data/club.json 의 recruit 값에 따라 main.js 가 바꿉니다.
-                여기 적힌 내용은 신청서 주소가 아직 없을 때 보이는 기본 상태입니다.
+                신청서 영역은 data/club.json 의 recruit 값에 따라 join.js 가 채웁니다.
+                여기 적힌 내용은 신청서 주소가 아직 없을 때의 기본 상태(준비 중 안내)입니다.
               -->
               <div class="form-slot" data-form-slot style="margin-top: 20px">
-                <p class="form-slot__title" data-form-title>
-                  신청서를 준비하고 있습니다
-                </p>
-                <p class="form-slot__desc" data-form-desc>
-                  모집이 시작되면 이 자리에 신청서 버튼이 생깁니다. 그 전에 궁금한
-                  점이 있으면 인스타그램 DM으로 편하게 물어보세요.
-                </p>
-                <a
-                  class="btn btn--primary"
-                  data-form-link
-                  href="#"
-                  target="_blank"
-                  rel="noopener"
-                  hidden
-                  >신청서 열기</a
-                >
+                <div class="form-slot__main">
+                  <p class="form-slot__title" data-form-title>
+                    신청서를 준비하고 있습니다
+                  </p>
+                  <p class="form-slot__desc" data-form-desc>
+                    모집이 시작되면 이 자리에 신청서 버튼이 생깁니다. 그 전에 궁금한
+                    점이 있으면 인스타그램 DM으로 편하게 물어보세요.
+                  </p>
+
+                  <div class="form-fields" data-form-fields hidden>
+                    <p class="form-fields__head">
+                      <span>신청서에서 묻는 것</span>
+                      <span class="form-fields__time" data-form-minutes></span>
+                    </p>
+                    <ul class="form-fields__list" data-form-field-list></ul>
+                  </div>
+                </div>
+
+                <figure class="form-qr" data-form-qr hidden>
+                  <div class="form-qr__code" data-form-qr-code></div>
+                  <figcaption>폰 카메라로 찍으면 신청서가 열립니다</figcaption>
+                  <button class="form-qr__save" type="button" data-form-qr-save>
+                    QR 이미지 저장
+                  </button>
+                </figure>
+
+                <div class="form-slot__actions" data-form-actions hidden>
+                  <a
+                    class="btn btn--primary"
+                    data-form-link
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                    >신청서 열기 ↗</a
+                  >
+                  <button
+                    class="btn btn--ghost"
+                    type="button"
+                    data-form-embed-toggle
+                    aria-expanded="false"
+                    aria-controls="form-embed"
+                    hidden
+                  >
+                    여기서 바로 작성
+                  </button>
+                  <button class="btn btn--ghost" type="button" data-form-share>
+                    링크 공유
+                  </button>
+                  <span
+                    class="form-slot__status"
+                    data-form-status
+                    role="status"
+                    aria-live="polite"
+                  ></span>
+                </div>
+
+                <div class="form-embed" id="form-embed" data-form-embed hidden>
+                  <iframe title="가입 신청서 (구글 폼)" data-form-embed-frame></iframe>
+                </div>
               </div>
             </div>
 
@@ -241,5 +284,7 @@
     </footer>
 
     <script src="assets/js/main.js" defer></script>
+    <script src="assets/js/vendor/qrcode.js" defer></script>
+    <script src="assets/js/join.js" defer></script>
   </body>
 </html>

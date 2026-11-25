@@ -46,7 +46,14 @@
     target.appendChild(el("p", "state", message));
   }
 
-  window.App = { getJSON, pick, el, showState };
+  window.App = {
+    getJSON,
+    pick,
+    el,
+    showState,
+    // 여러 스크립트가 같은 동아리 정보를 쓰므로 한 번만 읽어 둡니다.
+    club: getJSON("data/club.json"),
+  };
 
   /* ---------- 헤더: 스크롤 상태 ---------- */
 
@@ -159,7 +166,7 @@
    * JSON 을 못 읽어도 HTML 기본값이 그대로 보입니다.
    */
   async function applyClubInfo() {
-    const club = await getJSON("data/club.json");
+    const club = await window.App.club;
     if (!club) return;
 
     document.querySelectorAll("[data-club]").forEach(function (node) {
@@ -193,43 +200,6 @@
         node.textContent = "모집 마감";
         node.classList.add("badge--neutral");
       });
-    }
-
-    applyFormSlot(club);
-  }
-
-  /* ---------- 가입 페이지의 신청서 자리 ---------- */
-
-  /**
-   * 신청서 영역은 세 가지 상태를 가집니다.
-   *   1) recruit.open 이 false      → 마감 안내, 버튼 없음
-   *   2) recruit.formUrl 이 있음     → 신청 안내 + 버튼
-   *   3) 그 외                      → HTML 에 적힌 기본값(준비 중 안내) 유지
-   * 신청서 주소는 구글 폼이든 다른 서비스든 상관없습니다.
-   */
-  function applyFormSlot(club) {
-    const slot = document.querySelector("[data-form-slot]");
-    if (!slot) return;
-
-    const title = slot.querySelector("[data-form-title]");
-    const desc = slot.querySelector("[data-form-desc]");
-    const link = slot.querySelector("[data-form-link]");
-    const recruit = club.recruit || {};
-
-    if (recruit.open === false) {
-      title.textContent = "이번 모집은 마감되었습니다";
-      desc.textContent =
-        "다음 모집 일정은 인스타그램에 가장 먼저 올라옵니다. 팔로우해 두시면 놓치지 않습니다.";
-      link.hidden = true;
-      return;
-    }
-
-    if (recruit.formUrl) {
-      title.textContent = "신청서 작성하기";
-      desc.textContent =
-        "아래 버튼을 누르면 신청서가 새 탭에서 열립니다. 2분 정도면 끝납니다.";
-      link.href = recruit.formUrl;
-      link.hidden = false;
     }
   }
 
