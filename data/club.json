@@ -36,7 +36,7 @@
     "period": "매 학기 개강 첫 2주",
     "nextPeriod": "3월 2일 – 3월 15일",
     "formUrl": "https://forms.gle/sNTZd5TupN4pH3qG9",
-    "formEmbedUrl": "",
+    "formEmbedUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfLQokhAGrk7W_yOXBAe1esIvxryCTWBFNpMnJXMiiidbKaYQ/viewform?embedded=true",
     "formFields": [
       "이름",
       "학과",
