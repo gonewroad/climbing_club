@@ -21,14 +21,19 @@
 │   │   ├── schedule.js 일정 리스트 렌더
 │   │   ├── gallery.js  갤러리 그리드 + 라이트박스
 │   │   ├── join.js     가입 페이지 신청서 영역 (항목 안내 · 바로 작성 · QR · 공유)
+│   │   ├── instagram.js 인스타 섹션에 최근 게시물 표시
 │   │   └── vendor/
 │   │       └── qrcode.js  QR 생성 라이브러리 (qrcode-generator 2.0.4, MIT)
 │   └── img/            히어로 · 갤러리 이미지 (현재는 자리표시용 SVG)
+│       └── instagram/  인스타 게시물 사진 — 자동 동기화가 관리 (손대지 마세요)
+├── scripts/
+│   └── sync-instagram.mjs  인스타 피드 동기화 스크립트 (GitHub Actions 가 실행)
 └── data/               ← 내용 수정은 대부분 여기서만 하면 됩니다
     ├── club.json       동아리 기본 정보 (이름 · 암장 · 회비 · 모임 시간 · 연락처 · 모집)
     ├── schedule.json   일정
     ├── gallery.json    사진 목록
-    └── faq.json        자주 묻는 질문
+    ├── faq.json        자주 묻는 질문
+    └── instagram.json  인스타 최근 게시물 — 자동 동기화가 관리 (손대지 마세요)
 ```
 
 사이트는 세 층으로 나뉩니다. 고치려는 것이 어느 층인지 먼저 정하면 찾기 쉽습니다.
@@ -276,6 +281,57 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 워크플로 없이 가고 싶다면 Source 를 **Deploy from a branch** (`main` / `/ (root)`)
 로 두어도 됩니다. 그때는 `.github/workflows/deploy-pages.yml` 을 지우세요.
 
+## 인스타 피드 동기화
+
+메인 페이지 인스타 섹션의 사진 4장은 동아리 인스타(@takoyaki_climbing)의
+최근 게시물로 자동으로 바뀝니다.
+
+```
+Feedframer ──(6시간마다)──▶ GitHub Actions ──▶ data/instagram.json
+                                          └──▶ assets/img/instagram/*.jpg ──▶ 재배포
+```
+
+- `.github/workflows/sync-instagram.yml` 이 6시간마다 `scripts/sync-instagram.mjs` 를
+  실행해 최근 게시물 6개를 받아옵니다.
+- 인스타 사진 주소는 하루 이틀이면 만료되므로 **사진을 저장소에 직접 받아 둡니다.**
+  목록에서 밀려난 게시물의 사진은 지웁니다.
+- 게시물이 바뀌었을 때만 커밋하고 사이트를 다시 배포합니다. 바뀐 게 없으면 아무 일도
+  하지 않습니다.
+- 받아오기에 실패하면 기존 파일을 건드리지 않습니다. 사이트에는 마지막으로 받은
+  게시물이 그대로 보입니다. 첫 동기화 전에는 자리표시 그림이 보입니다.
+- 화면에 보일 개수는 `index.html` 의 `data-instagram data-limit="4"` 에서 바꿉니다.
+
+**새 게시물이 사이트에 뜨기까지** — Feedframer 무료 플랜은 하루 한 번 인스타를
+확인하고, 이 워크플로는 6시간마다 Feedframer 를 확인합니다. 그래서 길게는 하루 정도
+걸립니다. 급하면 Feedframer 대시보드에서 새로고침한 뒤(하루 1회 가능) 아래처럼 직접
+실행하세요.
+
+**직접 실행** — 저장소 **Actions** 탭 → 왼쪽 **Sync Instagram feed** →
+**Run workflow**
+
+**필요한 설정**
+
+| 항목 | 위치 |
+| --- | --- |
+| Feedframer API 토큰 | 저장소 **Settings → Secrets and variables → Actions** 의 `FEEDFRAMER_API_KEY` |
+| 인스타 계정 연결 | Feedframer 대시보드. 계정은 프로페셔널(크리에이터·비즈니스)이어야 함 |
+
+인스타 접근 토큰 갱신은 Feedframer 가 알아서 합니다. 이쪽에서 따로 할 일은 없습니다.
+
+**문제가 생기면**
+
+| 증상 | 확인할 것 |
+| --- | --- |
+| Actions 에 빨간 ✕, `FEEDFRAMER_API_KEY 가 비어 있습니다` | Secret 이름이 정확한지 |
+| `Feedframer 응답 오류 401` | 토큰이 맞는지. Feedframer 에서 다시 복사해 Secret 을 갱신 |
+| 노란 경고 `사진을 받지 못해 건너뜁니다` | 첫 장이 영상인 여러 장 게시물 등. 그 게시물만 빠지고 나머지는 정상 |
+| 동기화가 아예 안 돎 | 공개 저장소는 **60일 동안 활동이 없으면** 예약 실행이 꺼집니다. Actions 탭에서 다시 켜기 |
+
+실패하면 GitHub 가 계정 이메일로 알려줍니다.
+
+**그만 쓰려면** — Actions 탭에서 **Sync Instagram feed** 를 Disable 하고, 인스타
+**설정 → 웹사이트 권한** 에서 FeedFramer-IG 연결을 해제하세요.
+
 ## 아직 채워야 하는 것
 
 아래 값은 **실제 정보가 아닌 자리표시용**입니다.
@@ -299,6 +355,9 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 - 다크 테마 전용입니다. 클라이밍 사진이 어두운 배경에서 가장 잘 보입니다.
 - 외부 CDN 의존은 폰트(Pretendard) 하나뿐입니다. QR 생성 라이브러리는 CDN 대신
   `assets/js/vendor/` 에 직접 넣어 두었고, 가입 페이지에서만 불러옵니다.
+- 인스타 피드는 외부 서비스 Feedframer 를 거칩니다. 방문자 브라우저는 Feedframer 를
+  직접 부르지 않고 저장소에 받아 둔 파일만 읽으므로, Feedframer 가 멈춰도 사이트는
+  마지막 게시물을 그대로 보여줍니다.
 - 헤더와 푸터는 세 페이지에 각각 들어 있습니다. 메뉴를 고칠 때는 세 파일을 모두
   수정해야 합니다. 페이지가 더 늘어나면 정적 사이트 생성기 도입을 고려하세요.
 - 사진에 회원 얼굴이 들어가면 공개 사이트라 누구나 볼 수 있습니다. 올리기 전에

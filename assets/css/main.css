@@ -1052,6 +1052,36 @@
   border-radius: 8px;
 }
 
+.insta__post {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.insta__post img {
+  width: 100%;
+  transition: transform 0.4s var(--ease), opacity 0.2s var(--ease);
+}
+
+.insta__post:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.insta__badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(10, 11, 13, 0.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
 /* ---------- 푸터 ---------- */
 
 .footer {
