@@ -81,7 +81,7 @@ HTML 안에는 기본값이 들어 있고 JSON 값이 그 위를 덮어씁니다
 JSON에서 자주 실수하는 것:
 
 ```jsonc
-"name": "타코야끼",      // 값은 반드시 큰따옴표
+"name": "KRAKEN",        // 값은 반드시 큰따옴표
 "cohort": "2기",         // 숫자도 따옴표 (recruit.open 만 true/false)
 "capacity": "15"         // 마지막 줄 뒤에는 쉼표를 쓰지 않습니다
 ```

@@ -406,7 +406,7 @@
 
 .grades__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-top: 22px;
 }
@@ -418,22 +418,25 @@
   border-left: 3px solid var(--g, var(--accent));
 }
 
+/* 색 이름이 주 표기이고 V 등급은 참고용으로 작게 */
 .grade__tape {
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--g, var(--accent));
 }
 
 .grade__v {
-  margin-top: 3px;
-  font-size: 15px;
-  font-weight: 650;
-}
-
-.grade__who {
-  margin-top: 3px;
+  margin-top: 2px;
   color: var(--text-faint);
   font-size: 12.5px;
+}
+
+/* 여러 색이 한 단계인 경우 왼쪽 띠를 그라데이션으로 */
+.grade--multi {
+  border-left-color: transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(180deg, #ffd23f, #ff8c2c, #46d58a) border-box;
 }
 
 /* ---------- 일정 ---------- */
@@ -1017,6 +1020,36 @@
 
 /* ---------- 인스타그램 ---------- */
 
+/* 소개 오른쪽: 핵심 정보 카드 + 크라켄 어원 */
+.about__side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.origin {
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  word-break: keep-all;
+}
+
+.origin__label {
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.origin__text {
+  margin-top: 10px;
+  color: var(--text-dim);
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
 /* 소개 섹션 안, 소개 글 바로 아래에 붙는 인스타 카드 */
 .about + .insta {
   margin-top: clamp(40px, 6vw, 72px);
@@ -1281,6 +1314,10 @@
 @media (max-width: 520px) {
   .stats {
     grid-template-columns: 1fr;
+  }
+
+  .grades__list {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .hero__actions .btn {
