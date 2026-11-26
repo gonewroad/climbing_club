@@ -68,7 +68,7 @@
   function loadImage(src) {
     return new Promise(function (resolve) {
       const img = new Image();
-      // 인스타 쪽에 어느 페이지에서 왔는지 보내지 않습니다.
+      // 사진 서버에 어느 페이지에서 왔는지 보내지 않습니다.
       img.referrerPolicy = "no-referrer";
       img.decoding = "async";
       img.onload = function () {
