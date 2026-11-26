@@ -84,7 +84,7 @@ JSON에서 자주 실수하는 것:
 
 ```jsonc
 "name": "KRAKEN",        // 값은 반드시 큰따옴표
-"cohort": "2기",         // 숫자도 따옴표 (recruit.open 만 true/false)
+"cohort": "3기",         // 숫자도 따옴표 (recruit.open 만 true/false)
 "capacity": "15"         // 마지막 줄 뒤에는 쉼표를 쓰지 않습니다
 ```
 
