@@ -8,6 +8,7 @@
   const { getJSON, el, showState } = window.App;
 
   let shots = [];
+  let galleryTarget = null;
   let current = 0;
   let lastFocused = null;
   let lightbox = null;
@@ -96,10 +97,15 @@
     button.setAttribute("aria-label", (item.caption || "사진") + " 크게 보기");
 
     const img = document.createElement("img");
-    img.src = item.src;
+    // 그리드 칸에는 작게 자른 사진(thumb)이 있으면 그걸 씁니다.
+    img.src = item.thumb || item.src;
     img.alt = item.alt || item.caption || "";
     img.loading = index < 3 ? "eager" : "lazy";
     img.decoding = "async";
+    // 외부 사진이 깨지면 빈 칸 대신 그 사진만 뺍니다.
+    img.addEventListener("error", function () {
+      dropShot(item, button);
+    });
 
     button.appendChild(img);
 
@@ -108,7 +114,7 @@
     }
 
     button.addEventListener("click", function () {
-      open(index);
+      open(shots.indexOf(item));
     });
 
     return button;
@@ -120,20 +126,28 @@
 
     const items = await getJSON("data/gallery.json");
     if (!items || !items.length) {
-      showState(
-        target,
-        "사진을 불러오지 못했습니다. 로컬에서는 간단한 웹 서버로 열어주세요. (data/gallery.json)"
-      );
+      showState(target, "사진을 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
       return;
     }
 
     const limit = Number(target.dataset.limit) || items.length;
     shots = items.slice(0, limit);
 
+    galleryTarget = target;
     target.innerHTML = "";
     shots.forEach(function (item, index) {
       target.appendChild(buildShot(item, index));
     });
+  }
+
+  /** 깨진 사진을 그리드와 라이트박스 목록에서 뺍니다. */
+  function dropShot(item, button) {
+    const index = shots.indexOf(item);
+    if (index !== -1) shots.splice(index, 1);
+    button.remove();
+    if (!shots.length && galleryTarget) {
+      showState(galleryTarget, "사진을 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
+    }
   }
 
   renderGallery();

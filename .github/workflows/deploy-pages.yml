@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # 6시간마다 구글 포토 앨범을 확인합니다 (UTC). 사진이 바뀌었을 때만 다시 배포합니다.
+    - cron: "23 */6 * * *"
 
 permissions:
   contents: read
@@ -15,15 +18,22 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  SITE_URL: https://gonewroad.github.io/climbing_club
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      deploy: ${{ steps.decide.outputs.deploy }}
     steps:
       - name: 저장소 체크아웃
         uses: actions/checkout@v4
+
+      - name: Node 준비
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       # Pages 활성화는 최초 1회 저장소 Settings 에서 해야 한다.
       # 워크플로 기본 토큰으로는 Pages 사이트를 새로 만들 수 없다.
@@ -46,11 +56,44 @@ jobs:
           mv club.json.tmp data/club.json
           echo "인스타 피드 키를 넣었습니다."
 
+      # club.json 의 galleryAlbumUrl 앨범에서 사진 주소를 뽑아 배포하는 사이트의
+      # data/gallery.json 에만 넣는다. 실패하면 지금 사이트의 갤러리를 유지한다.
+      - name: 구글 포토 앨범으로 갤러리 채우기
+        env:
+          LIVE_GALLERY_URL: ${{ env.SITE_URL }}/data/gallery.json
+        run: node scripts/gallery-from-album.mjs
+
+      # 예약 실행은 갤러리가 바뀌었을 때만 배포한다. push·수동 실행은 항상 배포한다.
+      - name: 배포 여부 결정
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          live="$(curl -fsS "$SITE_URL/data/gallery.json" || true)"
+          if [ "$live" = "$(cat data/gallery.json)" ]; then
+            echo "갤러리가 그대로라 배포하지 않습니다."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "갤러리가 바뀌어 다시 배포합니다."
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: 사이트 업로드
+        if: steps.decide.outputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
 
+  deploy:
+    needs: build
+    if: needs.build.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: 배포
         id: deployment
         uses: actions/deploy-pages@v4
