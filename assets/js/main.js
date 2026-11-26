@@ -24,7 +24,7 @@
     }
   }
 
-  /** 객체에서 "homeGym.name" 같은 경로로 값을 꺼냅니다. */
+  /** 객체에서 "fee.amount" 같은 경로로 값을 꺼냅니다. */
   function pick(obj, path) {
     return path.split(".").reduce(function (acc, key) {
       return acc == null ? undefined : acc[key];
@@ -161,7 +161,7 @@
 
   /**
    * HTML 안의 기본값을 data/club.json 값으로 덮어씁니다.
-   *   <span data-club="homeGym.name">○○ 클라이밍 짐</span>
+   *   <span data-club="area">서울 및 수도권, 인천</span>
    *   <a data-club-href="contact.instagramUrl" href="#">인스타그램</a>
    * JSON 을 못 읽어도 HTML 기본값이 그대로 보입니다.
    */
@@ -185,12 +185,24 @@
       (node.closest("li") || node).hidden = true;
     });
 
+    // 값이 있을 때만 보이는 부분(data-club-if)과 값이 없을 때만 보이는 부분
+    // (data-club-unless). 예: 정원이 비어 있으면 "정원 N명" 대신 "미정".
+    document.querySelectorAll("[data-club-if]").forEach(function (node) {
+      const value = pick(club, node.dataset.clubIf);
+      node.hidden = value == null || value === "";
+    });
+    document.querySelectorAll("[data-club-unless]").forEach(function (node) {
+      const value = pick(club, node.dataset.clubUnless);
+      node.hidden = !(value == null || value === "");
+    });
+
     const meetings = club.meetings || [];
     document.querySelectorAll("[data-club-meetings]").forEach(function (node) {
       if (!meetings.length) return;
       node.textContent = meetings
         .map(function (m) {
-          return m.day + " " + m.time;
+          // time 은 비워 둘 수 있습니다.
+          return [m.day, m.time].filter(Boolean).join(" ");
         })
         .join(" · ");
     });

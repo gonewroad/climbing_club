@@ -88,11 +88,11 @@
           <div class="hero__meta">
             <div>
               정기 모임
-              <strong data-club-meetings>매주 토·일 번갈아 16:00 – 19:00</strong>
+              <strong data-club-meetings>매주 1회, 토요일 또는 일요일</strong>
             </div>
             <div>
-              홈 암장
-              <strong data-club="homeGym.name">○○ 클라이밍 짐</strong>
+              주요 활동 지역
+              <strong data-club="area">서울 및 수도권, 인천</strong>
             </div>
             <div>
               회비
@@ -204,11 +204,11 @@
               <p class="activity__icon" aria-hidden="true">🧗</p>
               <h3 class="activity__title">실내 클라이밍</h3>
               <p class="activity__desc">
-                매주 1회, 토요일과 일요일을 번갈아 정기 클라이밍 활동을 진행합니다.
-                함께 다양한 문제에 도전하고, 서로의 무브와 노하우를 공유하며 클라이밍의
+                정기 클라이밍은 매주 1회, 토요일 또는 일요일에 진행됩니다. 함께
+                다양한 문제에 도전하고, 서로의 무브와 노하우를 공유하며 클라이밍의
                 즐거움을 나눕니다. 번개를 통한 비정기 활동도 자유롭게 열립니다!
               </p>
-              <p class="activity__tag"><span class="badge">매주 · 토·일 번갈아</span></p>
+              <p class="activity__tag"><span class="badge">매주 1회 · 토 또는 일</span></p>
             </article>
 
             <article class="activity">
@@ -265,9 +265,9 @@
             <div class="worry">
               <p class="worry__q">장비를 사야 하나요”</p>
               <p class="worry__a">
-                사지 않아도 됩니다. 암벽화와 초크는 <strong>암장에서 대여</strong>할 수
-                있습니다 (대여료 별도). 편한 운동복만 입고 오세요. 본인 암벽화는 계속
-                하고 싶어질 때 사면 됩니다.
+                사지 않아도 됩니다. 암벽화는 <strong>암장에서 대여</strong>할 수 있고
+                (대여료 별도), 초크는 <strong>동아리에서 빌려드립니다</strong>. 편한
+                운동복만 입고 오세요. 본인 암벽화는 계속 하고 싶어질 때 사면 됩니다.
               </p>
             </div>
 
@@ -391,7 +391,7 @@
             <span class="badge" data-recruit-open>신입 모집 중</span>
             <h2 class="join-cta__title">이번 학기, 같이 올라가 볼까요?</h2>
             <p class="join-cta__desc">
-              모집 기간은 <strong data-club="recruit.nextPeriod">3월 2일 – 3월 15일</strong>
+              모집 기간은 <strong data-club="recruit.nextPeriod">12월 1일 – 12월 15일</strong>
               입니다. 신청서를 보내주시면 담당자가 연락드리고, 첫 세션 참여 방법을
               안내해 드립니다.
             </p>
@@ -409,8 +409,9 @@
             </div>
 
             <p class="join-cta__fine">
-              정원 <span data-club="recruit.capacity">15</span>명 · 선착순이 아니며
-              신청서를 보고 개별 연락드립니다
+              <span data-club-if="recruit.capacity" hidden
+                >정원 <span data-club="recruit.capacity"></span>명 · </span
+              >선착순이 아니며 신청서를 보고 개별 연락드립니다
             </p>
           </div>
         </div>
@@ -431,11 +432,10 @@
           </div>
 
           <div class="footer__col">
-            <h4>홈 암장</h4>
+            <h4>주요 활동 지역</h4>
             <ul>
-              <li><span data-club="homeGym.name">○○ 클라이밍 짐</span></li>
-              <li><span data-club="homeGym.address">서울시 ○○구 ○○로 00, 지하 1층</span></li>
-              <li><span data-club="homeGym.walk">학교 정문에서 도보 10분</span></li>
+              <li><span data-club="area">서울 및 수도권, 인천</span></li>
+              <li><span data-club-meetings>매주 1회, 토요일 또는 일요일</span></li>
             </ul>
           </div>
 

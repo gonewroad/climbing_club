@@ -100,17 +100,17 @@ JSON에서 자주 실수하는 것:
 | `intro` | 첫 화면 큰 제목 아래 설명문 |
 | `cohort` | 소개 섹션 "기수" 카드 |
 | `galleryAlbumUrl` | 갤러리에 쓸 구글 포토 공유 앨범 주소 |
-| `homeGym.name` | 첫 화면 메타, 푸터, 가입 페이지 |
-| `homeGym.address` / `.walk` | 푸터, 가입 페이지 |
-| `fee.amount` / `.period` | 첫 화면 메타, 가입 페이지 |
-| `fee.includes` | 가입 페이지 회비 설명 |
-| `meetings` | 첫 화면 "정기 모임", 가입 페이지 |
+| `area` | "주요 활동 지역" — 첫 화면 메타, 푸터, 가입 페이지 |
+| `fee.amount` | 첫 화면 메타, 가입 페이지 |
+| `fee.includes` / `.note` | 가입 페이지 회비 설명 (두 줄) |
+| `meetings` | 첫 화면 "정기 모임", 푸터, 가입 페이지. `time` 은 비워 두면 표시하지 않습니다 |
 | `contact.instagram` | 인스타 섹션 핸들 |
 | `contact.instagramUrl` | 인스타 버튼 링크 (4곳) |
 | `contact.instagramFeedKey` | **비워 두세요.** 배포할 때 GitHub Secret 의 키가 자동으로 들어갑니다 (아래 "인스타 피드" 참고) |
 | `contact.openChatUrl` | 푸터 오픈채팅 링크 |
 | `recruit.open` | `false` 로 바꾸면 배지가 "모집 마감"으로 |
-| `recruit.nextPeriod` / `.capacity` | 가입 CTA, 가입 페이지 |
+| `recruit.nextPeriod` | 가입 CTA, 가입 페이지 "모집 기간" |
+| `recruit.capacity` | 정원 숫자. 비워 두면 가입 페이지에 "미정", CTA 에서는 정원 문구가 빠집니다 |
 | `recruit.formUrl` | 가입 페이지 신청서 영역 — "신청서 열기" 버튼과 QR (아래 설명) |
 | `recruit.formEmbedUrl` | "여기서 바로 작성" — 페이지 안에 펼쳐지는 구글 폼 (아래 설명) |
 | `recruit.formFields` | "신청서에서 묻는 것" 목록, 가입 절차 1단계 문구 |
@@ -165,8 +165,7 @@ FAQ 를 함께 볼 수 있고 다음 학기에 신청서가 바뀌어도 링크�
 없는 링크를 방문자에게 보이지 않기 위해서입니다. 푸터의 카카오 오픈채팅
 링크가 지금 그런 상태입니다.
 
-**아직 화면에 연결되지 않은 키**: `homeGym.mapUrl`, `contact.email`,
-`recruit.period`. 채워도 어디에도 표시되지 않습니다.
+**아직 화면에 연결되지 않은 키**: `contact.email`, `recruit.period`. 채워도 어디에도 표시되지 않습니다.
 
 ### JSON에 없는 것
 
@@ -375,18 +374,12 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 
 아래 값은 **실제 정보가 아닌 자리표시용**입니다.
 
-- [ ] 홈 암장 이름 · 주소 · 찾아오는 길 (`data/club.json` → `homeGym`)
-- [ ] 회비에 실제로 포함되는 항목 (`fee.includes`)
 - [ ] 카카오 오픈채팅 링크 (`contact.openChatUrl`)
-- [ ] 모집 기간 · 정원 (`recruit.nextPeriod`, `recruit.capacity`)
+- [ ] 모집 정원 (`recruit.capacity`) — 지금은 비어 있어 "미정"으로 보입니다
 - [ ] 신청서 항목이 실제 구글 폼과 맞는지 (`recruit.formFields`)
 - [ ] "여기서 바로 작성" 용 전체 주소 (`recruit.formEmbedUrl`) — 선택
-- [ ] 난이도 색 체계 — 암장마다 다르므로 홈 암장 기준으로 수정 (`index.html`)
-- [ ] 일정 (`data/schedule.json`) — 현재는 예시 7건
+- [ ] 난이도 색 체계 — 지금은 더클라임 기준. 암장마다 다릅니다 (`index.html`)
 - [ ] FAQ 중 신입 교육 관련 내용이 실제와 맞는지 확인 (`data/faq.json`)
-
-`meetings` 에 토·일 두 개가 들어 있는데 소개 섹션에는 "주 1회"로 적혀 있습니다.
-둘 중 하나를 실제에 맞게 고쳐야 합니다.
 
 ## 메모
 

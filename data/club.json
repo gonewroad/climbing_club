@@ -5,20 +5,16 @@
   "intro": "운동 경험도, 장비도 없어도 괜찮습니다. 매주 같은 벽 앞에 모여 한 칸씩 더 올라가는 클라이밍 연합동아리입니다.",
   "cohort": "2기",
   "galleryAlbumUrl": "https://photos.app.goo.gl/qiyC4di1zHj73X9t6",
-  "homeGym": {
-    "name": "○○ 클라이밍 짐",
-    "address": "서울시 ○○구 ○○로 00, 지하 1층",
-    "walk": "학교 정문에서 도보 10분",
-    "mapUrl": ""
-  },
+  "area": "서울 및 수도권, 인천",
   "fee": {
     "amount": "30,000",
-    "includes": "입회비 10,000원 + 정기회비 20,000원"
+    "includes": "입회비 10,000원 + 정기회비 20,000원",
+    "note": "정기회비는 반기별(6개월)로 20,000원입니다"
   },
   "meetings": [
     {
-      "day": "매주 토·일 번갈아",
-      "time": "16:00 – 19:00"
+      "day": "매주 1회, 토요일 또는 일요일",
+      "time": ""
     }
   ],
   "contact": {
@@ -31,7 +27,7 @@
   "recruit": {
     "open": true,
     "period": "매 학기 개강 첫 2주",
-    "nextPeriod": "3월 2일 – 3월 15일",
+    "nextPeriod": "12월 1일 – 12월 15일",
     "formUrl": "https://forms.gle/sNTZd5TupN4pH3qG9",
     "formEmbedUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfLQokhAGrk7W_yOXBAe1esIvxryCTWBFNpMnJXMiiidbKaYQ/viewform?embedded=true",
     "formFields": [
@@ -42,6 +38,6 @@
       "운동 경험"
     ],
     "formMinutes": "2",
-    "capacity": "15"
+    "capacity": ""
   }
 }

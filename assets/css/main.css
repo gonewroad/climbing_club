@@ -837,6 +837,7 @@
   margin: 4px 0 0;
   font-size: 15.5px;
   font-weight: 550;
+  word-break: keep-all; /* 한글 낱말 중간에서 줄이 바뀌지 않게 */
 }
 
 .info-row dd small {
