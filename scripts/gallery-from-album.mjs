@@ -121,7 +121,15 @@ async function main() {
   if (!res.ok) return keepCurrent(`앨범 응답 ${res.status}`);
 
   const photos = extractPhotos(html);
-  console.log(`앨범 페이지(${new URL(res.url).host})에서 사진 ${photos.length}장을 찾았습니다.`);
+  // 크기 정보 없이 주소만 있는 것까지 센 수. 이보다 찾은 사진이 크게 적으면 구조가 바뀐 것.
+  const mentioned = new Set(html.match(/https:\/\/lh3\.googleusercontent\.com\/pw\/[A-Za-z0-9_-]+/g) || []).size;
+  console.log(
+    `앨범 페이지(${new URL(res.url).host})에서 사진 ${photos.length}장을 찾았습니다 ` +
+      `(페이지 안 사진 주소 ${mentioned}개).`
+  );
+  if (mentioned > photos.length + 1) {
+    warn(`페이지에 사진 주소가 ${mentioned}개인데 ${photos.length}장만 찾았습니다. 앨범 구조가 바뀌었을 수 있습니다.`);
+  }
   if (!photos.length) {
     describePage(html);
     return keepCurrent("사진 주소를 찾지 못함");
