@@ -217,6 +217,14 @@
   font-weight: 600;
 }
 
+.hero__meta small {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-dim);
+  font-size: 13px;
+  word-break: keep-all;
+}
+
 /* ---------- 소개 ---------- */
 
 .about {
