@@ -104,7 +104,7 @@ JSON에서 자주 실수하는 것:
 | `meetings` | 첫 화면 "정기 모임", 가입 페이지 |
 | `contact.instagram` | 인스타 섹션 핸들 |
 | `contact.instagramUrl` | 인스타 버튼 링크 (4곳) |
-| `contact.instagramFeedKey` | 인스타 섹션 최근 게시물 (아래 "인스타 피드" 참고) |
+| `contact.instagramFeedKey` | **비워 두세요.** 배포할 때 GitHub Secret 의 키가 자동으로 들어갑니다 (아래 "인스타 피드" 참고) |
 | `contact.openChatUrl` | 푸터 오픈채팅 링크 |
 | `recruit.open` | `false` 로 바꾸면 배지가 "모집 마감"으로 |
 | `recruit.nextPeriod` / `.capacity` | 가입 CTA, 가입 페이지 |
@@ -297,16 +297,18 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
   언제 지워지는지는 Feedframer 정책을 따릅니다.
 - 화면에 보일 개수는 `index.html` 의 `data-instagram data-limit="4"` 에서 바꿉니다.
 
-**키 넣기** — Feedframer 대시보드의 **API Token** 을 복사해 `data/club.json` 의
-`contact.instagramFeedKey` 에 붙여넣습니다.
+**키는 GitHub Secret 에 둡니다** — Feedframer 대시보드의 **API Token** 을 저장소
+**Settings → Secrets and variables → Actions** 의 `FEEDFRAMER_API_KEY` 에 넣어 둡니다.
+배포할 때 `.github/workflows/deploy-pages.yml` 이 이 키를 꺼내 **배포되는 사이트의**
+`data/club.json` 에만 넣습니다. 저장소의 `club.json` 은 `instagramFeedKey` 가 빈 채로
+그대로입니다.
 
-```jsonc
-"instagramFeedKey": "여기에 토큰"
-```
+`club.json` 에 키를 직접 적지 마세요. 저장소가 공개라서 커밋 기록에 영구히 남습니다.
 
-이 키는 페이지 소스에 그대로 보입니다. Feedframer 는 키로 할 수 있는 일이 **이 계정의
-공개 게시물 읽기뿐**이라 브라우저에 노출해도 괜찮다고 안내합니다. 혹시 남용되는 것
-같으면 Feedframer 대시보드에서 키를 새로 발급하고 이 칸을 바꾸면 됩니다.
+키는 방문자 브라우저가 써야 하므로 배포된 사이트의 소스에는 보입니다. Feedframer 는
+키로 할 수 있는 일이 **이 계정의 공개 게시물 읽기뿐**이라 브라우저에 노출해도 괜찮다고
+안내합니다. 혹시 남용되는 것 같으면 Feedframer 대시보드에서 키를 새로 발급하고 Secret
+을 바꾼 뒤 다시 배포(Actions → Deploy to GitHub Pages → Run workflow)하세요.
 
 **새 게시물이 사이트에 뜨기까지** — Feedframer 무료 플랜은 하루 한 번 인스타를
 확인합니다. 급하면 Feedframer 대시보드에서 새로고침하세요(하루 1회 가능).
@@ -315,17 +317,20 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 
 | 항목 | 위치 |
 | --- | --- |
-| Feedframer API 토큰 | `data/club.json` → `contact.instagramFeedKey` |
+| Feedframer API 토큰 | 저장소 Secret `FEEDFRAMER_API_KEY` (배포 때 자동으로 사이트에 들어감) |
 | 인스타 계정 연결 | Feedframer 대시보드. 계정은 프로페셔널(크리에이터·비즈니스)이어야 함 |
 
 인스타 접근 토큰 갱신은 Feedframer 가 알아서 합니다.
 
-**사진이 안 바뀌면** — 개발자도구(F12) Console 에 `[인스타 피드] 불러오기 실패` 가
-보이면 키가 맞는지 확인하세요. 아무 메시지가 없는데 자리표시 그림이 보이면
-`instagramFeedKey` 가 비어 있는 것입니다.
+**사진이 안 바뀌면**
 
-**그만 쓰려면** — `instagramFeedKey` 를 비우고, 인스타 **설정 → 웹사이트 권한** 에서
-FeedFramer-IG 연결을 해제하세요.
+| 증상 | 확인할 것 |
+| --- | --- |
+| 배포 기록에 노란 경고 `FEEDFRAMER_API_KEY 가 없어…` | Secret 이 없거나 이름이 다름 |
+| 개발자도구(F12) Console 에 `[인스타 피드] 불러오기 실패` | 키가 틀림. Feedframer 에서 다시 복사해 Secret 갱신 후 재배포 |
+
+**그만 쓰려면** — Secret `FEEDFRAMER_API_KEY` 를 지우고 다시 배포한 뒤, 인스타
+**설정 → 웹사이트 권한** 에서 FeedFramer-IG 연결을 해제하세요.
 
 ## 아직 채워야 하는 것
 
