@@ -1017,6 +1017,11 @@
 
 /* ---------- 인스타그램 ---------- */
 
+/* 소개 섹션 안, 소개 글 바로 아래에 붙는 인스타 카드 */
+.about + .insta {
+  margin-top: clamp(40px, 6vw, 72px);
+}
+
 .insta {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

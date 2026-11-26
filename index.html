@@ -141,6 +141,36 @@
               </div>
             </div>
           </div>
+
+          <!-- 인스타그램: 소개 바로 아래에서 실제 활동 모습을 보여줍니다 -->
+          <div class="insta reveal">
+            <div>
+              <p class="insta__handle">
+                @<span data-club="contact.instagram">climbon_official</span>
+              </p>
+              <p class="insta__desc">
+                세션 사진과 공지는 인스타그램에 가장 먼저 올라갑니다.
+              </p>
+              <p style="margin-top: 18px">
+                <a
+                  class="btn btn--ghost"
+                  data-club-href="contact.instagramUrl"
+                  href="#"
+                  target="_blank"
+                  rel="noopener"
+                  >팔로우하기</a
+                >
+              </p>
+            </div>
+
+            <!-- 최근 게시물은 instagram.js 가 Feedframer 에서 불러와 채웁니다. 아래는 키가 없거나 불러오지 못했을 때 보이는 자리표시 그림입니다. -->
+            <div class="insta__grid" data-instagram data-limit="4">
+              <img src="assets/img/gallery/g01.svg" alt="" />
+              <img src="assets/img/gallery/g02.svg" alt="" />
+              <img src="assets/img/gallery/g03.svg" alt="" />
+              <img src="assets/img/gallery/g04.svg" alt="" />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -367,39 +397,6 @@
         </div>
       </section>
 
-      <!-- ===================== 인스타그램 ===================== -->
-      <section class="section">
-        <div class="container">
-          <div class="insta reveal">
-            <div>
-              <p class="insta__handle">
-                @<span data-club="contact.instagram">climbon_official</span>
-              </p>
-              <p class="insta__desc">
-                세션 사진과 공지는 인스타그램에 가장 먼저 올라갑니다.
-              </p>
-              <p style="margin-top: 18px">
-                <a
-                  class="btn btn--ghost"
-                  data-club-href="contact.instagramUrl"
-                  href="#"
-                  target="_blank"
-                  rel="noopener"
-                  >팔로우하기</a
-                >
-              </p>
-            </div>
-
-            <!-- 최근 게시물은 instagram.js 가 Feedframer 에서 불러와 채웁니다. 아래는 키가 없거나 불러오지 못했을 때 보이는 자리표시 그림입니다. -->
-            <div class="insta__grid" data-instagram data-limit="4">
-              <img src="assets/img/gallery/g01.svg" alt="" />
-              <img src="assets/img/gallery/g02.svg" alt="" />
-              <img src="assets/img/gallery/g03.svg" alt="" />
-              <img src="assets/img/gallery/g04.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
 
     <!-- ===================== 푸터 ===================== -->
