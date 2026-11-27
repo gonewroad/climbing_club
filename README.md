@@ -28,7 +28,7 @@
 ├── scripts/
 │   └── gallery-from-album.mjs  구글 포토 앨범 → 갤러리 (배포 때 실행)
 └── data/               ← 내용 수정은 대부분 여기서만 하면 됩니다
-    ├── club.json       동아리 기본 정보 (이름 · 암장 · 회비 · 모임 시간 · 연락처 · 모집)
+    ├── club.json       동아리 기본 정보 (이름 · 활동 지역 · 회비 · 모임 시간 · 연락처 · 모집)
     ├── schedule.json   일정
     ├── gallery.json    기본 사진 목록 — 구글 포토 앨범을 못 읽을 때만 쓰임
     └── faq.json        자주 묻는 질문
@@ -69,7 +69,7 @@ HTML을 건드리지 않고 `data/*.json`만 고치면 사이트 전체에 반�
 
 | 하고 싶은 일 | 고칠 파일 |
 | --- | --- |
-| 동아리 이름 · 소속 · 암장 · 회비 · 인스타 계정 변경 | `data/club.json` |
+| 동아리 이름 · 소속 · 활동 지역 · 회비 · 인스타 계정 변경 | `data/club.json` |
 | 모집 중 / 마감 전환 | `data/club.json` → `recruit.open` |
 | 가입 신청 폼 연결 | `data/club.json` → `recruit.formUrl` |
 | 일정 추가 · 삭제 | `data/schedule.json` |
@@ -385,7 +385,7 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 - [ ] 모집 정원 (`recruit.capacity`) — 지금은 비어 있어 "미정"으로 보입니다
 - [ ] 신청서 항목이 실제 구글 폼과 맞는지 (`recruit.formFields`)
 - [ ] "여기서 바로 작성" 용 전체 주소 (`recruit.formEmbedUrl`) — 선택
-- [ ] 난이도 색 체계 — 지금은 더클라임 기준. 암장마다 다릅니다 (`index.html`)
+- [ ] 난이도 색 체계 — 지금은 더클라임 기준. 클라이밍장마다 다릅니다 (`index.html`)
 - [ ] FAQ 중 신입 교육 관련 내용이 실제와 맞는지 확인 (`data/faq.json`)
 
 ## 메모
