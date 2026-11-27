@@ -15,6 +15,10 @@
   let lightboxImg = null;
   let lightboxCaption = null;
 
+  // 그리드 칸이 화면에서 차지하는 가로 크기. 좁은 화면은 한 줄에 한 칸, 그 외에는 칸이 360px 이하.
+  // 브라우저는 이 값 × 화면 배율에 맞는 사진을 thumbSrcset 에서 고릅니다.
+  const TILE_SIZES = "(max-width: 600px) 100vw, 360px";
+
   /* ---------- 라이트박스 ---------- */
 
   function buildLightbox() {
@@ -53,13 +57,60 @@
     return box;
   }
 
+  /**
+   * 크게 보기 사진 주소. views(여러 크기)가 있으면 화면을 채우는 가장 작은 것을 고릅니다.
+   * 라이트박스 사진은 가로 최대 1080px, 세로 화면의 78% 까지 커집니다.
+   */
+  function viewUrl(item) {
+    const views = item.views || [];
+    if (!views.length) return item.src;
+    const ratio = window.devicePixelRatio || 1;
+    const needed = Math.max(Math.min(window.innerWidth, 1080), window.innerHeight * 0.78) * ratio;
+    const fit = views.find(function (view) {
+      return view.size >= needed;
+    });
+    return (fit || views[views.length - 1]).url;
+  }
+
+  /** 다음에 볼 것 같은 사진을 미리 받아 둡니다. */
+  const warmed = new Set();
+  function warm(item) {
+    if (!item) return;
+    const url = viewUrl(item);
+    if (warmed.has(url)) return;
+    warmed.add(url);
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+  }
+
   function show(index) {
     if (!shots.length) return;
     current = (index + shots.length) % shots.length;
     const shot = shots[current];
-    lightboxImg.src = shot.src;
+
+    // 새 사진이 올 때까지 이전 사진을 흐리게 둡니다.
+    lightboxImg.classList.add("is-loading");
+    lightboxImg.onload = function () {
+      lightboxImg.classList.remove("is-loading");
+    };
+    // 작은 사진(WebP 등)이 안 되면 기본 사진으로 한 번 더 시도합니다.
+    let retried = false;
+    lightboxImg.onerror = function () {
+      if (retried || !shot.src) return;
+      retried = true;
+      lightboxImg.src = shot.src;
+    };
+    lightboxImg.src = viewUrl(shot);
+    if (lightboxImg.complete && lightboxImg.naturalWidth) lightboxImg.classList.remove("is-loading");
+
     lightboxImg.alt = shot.alt || shot.caption || "";
     lightboxCaption.textContent = shot.caption || "";
+
+    if (shots.length > 1) {
+      warm(shots[(current + 1) % shots.length]);
+      warm(shots[(current - 1 + shots.length) % shots.length]);
+    }
   }
 
   function step(delta) {
@@ -91,21 +142,38 @@
 
   /* ---------- 그리드 ---------- */
 
-  function buildShot(item, index) {
-    const button = el("button", "shot");
+  function buildShot(item, eager) {
+    const button = el("button", "shot is-loading");
     button.type = "button";
     button.setAttribute("aria-label", (item.caption || "사진") + " 크게 보기");
 
     const img = document.createElement("img");
-    // 그리드 칸에는 작게 자른 사진(thumb)이 있으면 그걸 씁니다.
-    img.src = item.thumb || item.src;
     img.alt = item.alt || item.caption || "";
-    img.loading = index < 3 ? "eager" : "lazy";
+    // 화면 밖 사진은 스크롤해서 가까워질 때 받습니다.
+    img.loading = eager ? "eager" : "lazy";
     img.decoding = "async";
-    // 외부 사진이 깨지면 빈 칸 대신 그 사진만 뺍니다.
+
+    img.addEventListener("load", function () {
+      button.classList.remove("is-loading");
+    });
     img.addEventListener("error", function () {
+      // 작은 사진(WebP 등)이 안 되면 기본 사진으로 한 번 더 시도합니다.
+      if (img.hasAttribute("srcset")) {
+        img.removeAttribute("srcset");
+        img.removeAttribute("sizes");
+        img.src = item.thumb || item.src;
+        return;
+      }
+      // 그래도 깨지면 빈 칸 대신 그 사진만 뺍니다.
       dropShot(item, button);
     });
+
+    // 여러 크기가 있으면 브라우저가 칸에 맞는 것만 받습니다. 없으면 thumb, 그것도 없으면 src.
+    if (item.thumbSrcset) {
+      img.sizes = TILE_SIZES;
+      img.srcset = item.thumbSrcset;
+    }
+    img.src = item.thumb || item.src;
 
     button.appendChild(img);
 
@@ -115,6 +183,10 @@
 
     button.addEventListener("click", function () {
       open(shots.indexOf(item));
+    });
+    // 마우스를 올리면 크게 볼 사진을 미리 받기 시작합니다.
+    button.addEventListener("pointerenter", function (event) {
+      if (event.pointerType === "mouse") warm(item);
     });
 
     return button;
@@ -133,10 +205,13 @@
     const limit = Number(target.dataset.limit) || items.length;
     shots = items.slice(0, limit);
 
+    // 갤러리 페이지는 첫 줄을 바로 받고, 메인 페이지는 갤러리가 아래쪽이라 모두 나중에 받습니다.
+    const eagerCount = target.classList.contains("gallery--page") ? 3 : 0;
+
     galleryTarget = target;
     target.innerHTML = "";
     shots.forEach(function (item, index) {
-      target.appendChild(buildShot(item, index));
+      target.appendChild(buildShot(item, index < eagerCount));
     });
   }
 

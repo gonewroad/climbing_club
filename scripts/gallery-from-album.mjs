@@ -7,6 +7,9 @@
      사진 주소를 찾아 씁니다. 구글이 페이지 구조를 바꾸면 사진을 못 찾을 수 있습니다.
    - 사진을 못 찾으면 지금 사이트에 떠 있는 갤러리를 그대로 씁니다. 배포는 막지 않습니다.
    - 사진 파일은 받지 않고 주소만 씁니다. 사진은 방문자 브라우저가 구글 서버에서 불러옵니다.
+   - 구글 서버는 주소 끝에 크기를 붙이면 그 크기로 줄여 줍니다. 그리드 칸용으로 여러 크기를
+     적어 두면 브라우저가 화면에 맞는 것만 받습니다. 첫 장으로 WebP(더 가벼운 형식)가 되는지
+     확인해서 되면 WebP 로 받습니다.
 
    환경 변수
      LIVE_GALLERY_URL   (선택) 지금 사이트의 data/gallery.json 주소. 실패 시 이걸 유지합니다.
@@ -14,10 +17,17 @@
    =========================================================== */
 
 import { readFile, writeFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 
 const CLUB_FILE = "data/club.json";
 const GALLERY_FILE = "data/gallery.json";
 const MAX_PHOTOS = 100;
+
+// 그리드 칸(4:3 으로 자름) 가로 크기들. 브라우저가 칸 크기 × 화면 배율에 맞는 것을 고릅니다.
+// 800 보다 크게는 두지 않습니다. 휴대폰(배율 3)에서도 800 이면 충분히 선명하고, 더 크면 느려집니다.
+const TILE_WIDTHS = [400, 600, 800];
+// 크게 보기 크기들 (가로·세로 이 안에 맞춤). 화면에 맞는 가장 작은 것을 씁니다.
+const VIEW_SIZES = [1080, 1600];
 
 // 일반 브라우저처럼 요청해야 사진 정보가 들어 있는 페이지를 받습니다.
 const HEADERS = {
@@ -60,15 +70,62 @@ export function extractPhotos(html) {
   return photos;
 }
 
-export function toGallery(photos) {
+/**
+ * webp 가 true 면 주소 끝에 -rw 를 붙여 WebP 로 받습니다.
+ * src·thumb 는 늘 JPEG 입니다. 작은 사진이 실패하면 브라우저가 이것으로 다시 받습니다.
+ */
+export function toGallery(photos, { webp = false } = {}) {
+  const format = webp ? "-rw" : "";
   return photos.slice(0, MAX_PHOTOS).map((photo, index) => ({
-    // 크게 볼 때: 가로·세로 1600px 안에 맞춤 (비율 유지)
+    // 크게 볼 때 기본: 가로·세로 1600px 안에 맞춤 (비율 유지)
     src: `${photo.url}=w1600-h1600`,
-    // 그리드 칸: 4:3 으로 잘라서 작게
+    // 그리드 칸 기본: 4:3 으로 잘라서
     thumb: `${photo.url}=w800-h600-c`,
+    // 그리드 칸: 화면에 맞는 크기를 브라우저가 고름 (<img srcset>)
+    thumbSrcset: TILE_WIDTHS.map(
+      (width) => `${photo.url}=w${width}-h${(width * 3) / 4}-c${format} ${width}w`
+    ).join(", "),
+    // 크게 보기: 화면에 맞는 크기를 gallery.js 가 고름
+    views: VIEW_SIZES.map((size) => ({ size, url: `${photo.url}=w${size}-h${size}${format}` })),
     alt: `KRAKEN 활동 사진 ${index + 1}`,
     caption: "",
   }));
+}
+
+/* ---------- WebP 확인 · 크기 비교 ---------- */
+
+async function measure(url) {
+  try {
+    const res = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(15000) });
+    const body = await res.arrayBuffer();
+    return { ok: res.ok, type: res.headers.get("content-type") || "", bytes: body.byteLength };
+  } catch (err) {
+    return { ok: false, type: "", bytes: 0 };
+  }
+}
+
+function kb(result) {
+  if (!result.ok) return "실패";
+  const format = /webp/i.test(result.type) ? "WebP" : /jpe?g/i.test(result.type) ? "JPEG" : result.type;
+  return `${Math.round(result.bytes / 1024)}KB ${format}`;
+}
+
+/** 첫 장으로 WebP 가 되는지 보고, 예전 크기와 새 크기를 기록에 남깁니다. */
+async function checkWebp(photo) {
+  const [oldTile, tile400, tile800, oldView, view1080] = await Promise.all([
+    measure(`${photo.url}=w800-h600-c`),
+    measure(`${photo.url}=w400-h300-c-rw`),
+    measure(`${photo.url}=w800-h600-c-rw`),
+    measure(`${photo.url}=w1600-h1600`),
+    measure(`${photo.url}=w1080-h1080-rw`),
+  ]);
+  console.log(
+    `첫 장 크기 — 그리드 칸: 예전 ${kb(oldTile)} → 400px ${kb(tile400)} / 800px ${kb(tile800)}, ` +
+      `크게 보기: 예전 ${kb(oldView)} → 1080px ${kb(view1080)}`
+  );
+  const webp = [tile400, tile800, view1080].every((r) => r.ok && /webp/i.test(r.type));
+  if (!webp) warn("구글 사진 서버가 WebP 를 주지 않아 JPEG 로 받습니다. 크기 줄이기는 그대로 적용됩니다.");
+  return webp;
 }
 
 /* ---------- 실패하면 지금 갤러리 유지 ---------- */
@@ -135,9 +192,13 @@ async function main() {
     return keepCurrent("사진 주소를 찾지 못함");
   }
 
-  const gallery = toGallery(photos);
+  const webp = await checkWebp(photos[0]);
+  const gallery = toGallery(photos, { webp });
   await writeFile(GALLERY_FILE, JSON.stringify(gallery, null, 2) + "\n", "utf8");
-  console.log(`갤러리를 앨범 사진 ${gallery.length}장으로 채웠습니다.`);
+  console.log(`갤러리를 앨범 사진 ${gallery.length}장으로 채웠습니다${webp ? " (WebP)" : ""}.`);
 }
 
-main().catch((err) => keepCurrent(err.message));
+// 테스트에서 import 할 때는 실행하지 않습니다.
+if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
+  main().catch((err) => keepCurrent(err.message));
+}
