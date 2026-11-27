@@ -165,13 +165,33 @@
    *   <a data-club-href="contact.instagramUrl" href="#">인스타그램</a>
    * JSON 을 못 읽어도 HTML 기본값이 그대로 보입니다.
    */
+  /**
+   * 글자를 넣습니다. 값 안의 {name} 은 동아리 이름으로 바꾸고 강조색(<em>)을 입힙니다.
+   * 예: "클라이밍 연합동아리 {name} 입니다." → 클라이밍 연합동아리 <em>KRAKEN</em> 입니다.
+   */
+  function fillText(node, text, name) {
+    if (text.indexOf("{name}") === -1) {
+      node.textContent = text;
+      return;
+    }
+    node.textContent = "";
+    text.split("{name}").forEach(function (part, index) {
+      if (index > 0) {
+        const em = document.createElement("em");
+        em.textContent = name || "";
+        node.appendChild(em);
+      }
+      node.appendChild(document.createTextNode(part));
+    });
+  }
+
   async function applyClubInfo() {
     const club = await window.App.club;
     if (!club) return;
 
     document.querySelectorAll("[data-club]").forEach(function (node) {
       const value = pick(club, node.dataset.club);
-      if (value != null && value !== "") node.textContent = value;
+      if (value != null && value !== "") fillText(node, String(value), club.name);
     });
 
     document.querySelectorAll("[data-club-href]").forEach(function (node) {
