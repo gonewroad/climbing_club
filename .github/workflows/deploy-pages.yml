@@ -71,7 +71,8 @@ jobs:
             echo "deploy=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          live="$(curl -fsS "$SITE_URL/data/gallery.json" || true)"
+          # 사용자 도메인을 연결하면 github.io 주소가 그 도메인으로 넘어가므로 따라갑니다(-L).
+          live="$(curl -fsSL "$SITE_URL/data/gallery.json" || true)"
           if [ "$live" = "$(cat data/gallery.json)" ]; then
             echo "갤러리가 그대로라 배포하지 않습니다."
             echo "deploy=false" >> "$GITHUB_OUTPUT"
