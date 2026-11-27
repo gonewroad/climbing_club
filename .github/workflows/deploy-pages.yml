@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: https://gonewroad.github.io/climbing_club
+  SITE_URL: https://krakenclimb.com
 
 jobs:
   build:

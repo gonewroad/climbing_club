@@ -3,7 +3,8 @@
 클라이밍 연합동아리 웹사이트. 빌드 과정이 없는 정적 사이트로, GitHub Pages에
 그대로 올려서 운영합니다.
 
-사이트 주소: https://gonewroad.github.io/climbing_club/
+사이트 주소: https://krakenclimb.com
+(예전 주소 https://gonewroad.github.io/climbing_club/ 로 들어와도 자동으로 넘어옵니다)
 
 ## 구조
 
@@ -279,6 +280,25 @@ Pages 사이트를 새로 만들 권한이 없어서 자동화할 수 없습니�
 
 워크플로 없이 가고 싶다면 Source 를 **Deploy from a branch** (`main` / `/ (root)`)
 로 두어도 됩니다. 그때는 `.github/workflows/deploy-pages.yml` 을 지우세요.
+
+### 도메인 (krakenclimb.com)
+
+도메인은 **Settings → Pages → Custom domain** 에 적혀 있습니다. 이 저장소는 워크플로로
+배포하므로 `CNAME` 파일은 필요 없습니다.
+
+도메인 산 곳의 DNS 설정:
+
+| 종류 | 호스트 | 값 |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 / 185.199.109.153 / 185.199.110.153 / 185.199.111.153 (4줄) |
+| CNAME | www | gonewroad.github.io |
+
+- 위 외의 `@` A 레코드나 URL 포워딩이 있으면 HTTPS 인증서가 발급되지 않습니다.
+- **Enforce HTTPS** 는 켜 둔 채로 두세요. 끄면 브라우저에 "보안 연결을 지원하지 않습니다"
+  경고가 뜰 수 있습니다.
+- 도메인을 바꾸면 `.github/workflows/deploy-pages.yml` 의 `SITE_URL` 도 같이 바꿔 주세요.
+- 도메인은 해마다 갱신해야 합니다. 갱신을 놓치면 사이트가 열리지 않으니 만료일을
+  챙겨 두세요.
 
 ## 갤러리 (구글 포토 앨범)
 
