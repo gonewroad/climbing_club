@@ -931,10 +931,10 @@
 /* 신청서 주소가 있을 때: 안내 · QR · 버튼 · 바로 작성 */
 
 .form-slot.is-open {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   place-items: stretch;
   align-items: center;
-  gap: 22px 32px;
+  gap: 18px;
   min-height: 0;
   padding: 28px;
   border-style: solid;
@@ -947,8 +947,19 @@
   margin-inline: 0;
 }
 
+/* 신청서 아래: 묻는 항목(왼쪽) · QR(오른쪽) */
+.form-slot__extra {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px 32px;
+}
+
+.form-slot:not(.is-open) .form-slot__extra {
+  display: none;
+}
+
 .form-fields {
-  margin-top: 18px;
   padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -1272,6 +1283,10 @@
 
   .form-qr {
     display: none;
+  }
+
+  .form-slot__extra {
+    grid-template-columns: 1fr;
   }
 
   .form-slot__actions .btn {

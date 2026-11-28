@@ -27,7 +27,7 @@
   "recruit": {
     "open": true,
     "period": "매 학기 개강 첫 2주",
-    "nextPeriod": "12월 1일 – 12월 15일",
+    "nextPeriod": "11월 28일 – 12월 15일",
     "formUrl": "https://forms.gle/sNTZd5TupN4pH3qG9",
     "formEmbedUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfLQokhAGrk7W_yOXBAe1esIvxryCTWBFNpMnJXMiiidbKaYQ/viewform?embedded=true",
     "formFields": [

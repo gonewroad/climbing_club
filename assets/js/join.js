@@ -114,19 +114,23 @@
   function setupEmbed(url) {
     if (!url) return;
 
-    ui.embedToggle.hidden = false;
-    ui.embedToggle.addEventListener("click", function () {
-      const open = ui.embedToggle.getAttribute("aria-expanded") !== "true";
+    function setOpen(open, scroll) {
       ui.embedToggle.setAttribute("aria-expanded", String(open));
       ui.embedToggle.textContent = open ? "접기" : "여기서 바로 작성";
       ui.embed.hidden = !open;
 
       if (!open) return;
-      // 처음 펼칠 때 한 번만 불러옵니다. 가입 페이지를 열 때마다 구글 폼을
-      // 미리 불러오지 않기 위해서입니다.
       if (!ui.frame.getAttribute("src")) ui.frame.src = url;
-      ui.embed.scrollIntoView({ block: "start" });
+      if (scroll) ui.embed.scrollIntoView({ block: "start" });
+    }
+
+    ui.embedToggle.hidden = false;
+    ui.embedToggle.addEventListener("click", function () {
+      setOpen(ui.embedToggle.getAttribute("aria-expanded") !== "true", true);
     });
+
+    // 가입 버튼을 누르고 오면 바로 쓸 수 있도록 처음부터 펼쳐 둡니다.
+    setOpen(true, false);
   }
 
   /* ---------- QR ---------- */
@@ -268,7 +272,7 @@
     const hasFields = renderFields(recruit);
     ui.desc.textContent =
       (embedUrl
-        ? "새 탭에서 열거나 이 페이지에서 바로 작성할 수 있습니다."
+        ? "아래에서 바로 작성할 수 있습니다. 화면이 좁으면 새 탭에서 열어도 됩니다."
         : "아래 버튼을 누르면 신청서가 새 탭에서 열립니다.") +
       (!hasFields && minutes ? " " + minutes + "분 정도면 끝납니다." : "");
 
